@@ -1,11 +1,9 @@
 ﻿<!DOCTYPE html>
 <html lang="de">
 <head>
-    <!--Import Google Icon Font-->
-   <!-- <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
     <link type="text/css" rel="stylesheet" href="assets/css/calendar.css"/>
     <!--Import materialize.css-->
-    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="assets/css/materialize.min.css"  media="screen"/>
     <!--Let browser know website is optimized for mobile-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<meta charset="UTF-8">
@@ -16,7 +14,7 @@
 	<nav class="grey darken-3" role="navigation">
     <div class="nav-wrapper fixex-top container">
 		<div class="">
-			<form class="col s12">
+			<form class="col s12" id="navbarNewEntryForm">
 				<div class="row" id="firstNavRow" onclick="localMakeNavbarBig();">
 					<div class="input-field col l2 m3 s3">
 						<input type="date" class="datepicker" id="navbarStartDateNew">
@@ -31,7 +29,7 @@
 						<label for="navbarTitleNew">Titel</label>
 					</div>
 					<div class="col l2 m2 s2">
-						<a class="btn" onclick="localCreateNewEntry( $('#navbarTitleNew').val(), $('#navbarStartDateNew').val()+' ' + $('#navbarStartTimeNew').val(), $('#navbarEndDateNew').val() + ' ' + $('#navbarEndTimeNew').val(), $('#navbarOrganizerNew').val());" id="navbarSendNew">Anlegen</a>
+						<a class="btn" onclick="localMakeNavbarBig();" id="navbarSendNew">Anlegen</a>
 					</div>
 				</div>
 				<div class="row hide" id="secondNavRow">
@@ -54,12 +52,13 @@
 	</nav>
 	</div>
 	<!-- Body -->
-	<div class="container calendar_list" onclick="localMakeNavbarSmall();">
-		<ul class="collapsible" data-collapsible="accordion" id="calendar_entries">
-        <!-- Hier kommen dann per Ajax alle Elemente rein -->
-		</ul>
+	<div id="wholeBody">
+		<div class="container calendar_list" onclick="localMakeNavbarSmall();">
+			<ul class="collapsible" data-collapsible="accordion" id="calendar_entries">
+			<!-- Hier kommen dann per Ajax alle Elemente rein -->
+			</ul>
+		</div>
 	</div>
-
 
 
 	<footer>

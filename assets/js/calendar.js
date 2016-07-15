@@ -1,24 +1,24 @@
 ﻿/**
  * Created by max on 10.06.16.
  */
-
 function showError(Message)
 {
-   Materialize.toast("Fehler: "+Message, 5000, 'toastErrorClass');
+   Materialize.toast("Fehler: "+Message, 1000, 'toastErrorClass');
 }
 function showSuccess(Message)
 {
-    Materialize.toast(Message, 5000, 'toastSuccessClass');
+    Materialize.toast(Message, 1000, 'toastSuccessClass');
 }
 function showDebug(Message)
 {
 	//Materialize.toast("DEBUG:"+Message, 1000, 'toastDebugClass');
+	console.log("DEBUG:"+Message);
 }
 function sortJSONDate(data, key) 
 {
     return data.sort(function (a, b) {
-		var x = parseTimeString(a[key]);
-		var y = parseTimeString(b[key]);
+		var y = parseTimeString(a[key]);
+		var x = parseTimeString(b[key]);
 		return new Date(x[2],x[1],x[0],x[3],x[4]).getTime() - new Date(y[2],y[1],y[0],y[3],y[4]).getTime();
     });
 }
@@ -26,15 +26,47 @@ function getAllEntriesFromServer()
 {
 	ajaxQuery("get_events");
 }
+function showLoadingAnimation(onoff)
+{
+	var html = '<div class="progress" id="MyLoader">' +
+				'<div class="indeterminate"></div>' +
+				'</div>';
+	if(onoff == true)
+	{
+		$("div.navbar-fixed").append(html);
+	}else{
+		$("#MyLoader").remove();
+	}
+}
+function localToggleAllday(eventID)
+{
+	if(document.getElementById(eventID+'_body_allday').checked == true)
+	{
+		$('#'+eventID+'_body_start_time').val("00:00");
+		$('#'+eventID+'_body_start_time').prop('disabled', true);
+		$('#'+eventID+'_body_end_time').val("23:59");
+		$('#'+eventID+'_body_end_time').prop('disabled', true);
+	}else{
+		$('#'+eventID+'_body_start_time').val("00:00");
+		$('#'+eventID+'_body_start_time').prop('disabled', false);
+		$('#'+eventID+'_body_end_time').val("23:59");
+		$('#'+eventID+'_body_end_time').prop('disabled', false);
+	}
+	
+}
 function localMakeNavbarBig()
 {
 	$('div.nav-wrapper, nav').addClass("kopfzeileBig");
 	$('#secondNavRow').removeClass("hide");
+	$('#navbarSendNew').attr("onclick","localCreateNewEntry( $('#navbarTitleNew').val(), $('#navbarStartDateNew').val()+' ' + $('#navbarStartTimeNew').val(), $('#navbarEndDateNew').val() + ' ' + $('#navbarEndTimeNew').val(), $('#navbarOrganizerNew').val());")
 }
 function localMakeNavbarSmall()
 {
 	$('div.nav-wrapper, nav').removeClass("kopfzeileBig");
 	$('#secondNavRow').addClass("hide");
+	$('#navbarSendNew').attr("onclick","localMakeNavbarBig();")
+	//um die Bildbox zu aktivieren, wenn in den Body geklickt wird.
+	$('.materialboxed').materialbox();
 }
 function localGetEntryElement(eventID)
 {
@@ -47,6 +79,7 @@ function localGetEntryElement(eventID)
 }
 function parseTimeString(time, order)
 {
+	showDebug("Parse Time: "+time+" in style "+order);
 	var myregexp = new RegExp(/([0-9]{2,4})/gm); 
 	var dateString = time;
 	var returnArr = new Array;
@@ -102,72 +135,91 @@ function localCreateEntry(eventID, start)
                     '</div>' +
                 '</div>' +
 				'<div class="collapsible-body" id="e'+eventID+'_body">' +
-					'<div class="row">' +
-						'<form class="col s12" id="e'+eventID+'_body_form">' +
-							'<div class="row">' +
-								'<div class="input-field col s12">' +
-									'<input placeholder="Titel" id="e'+eventID+'_body_title" type="text" class="validate">' +
-									'<label for="e'+eventID+'_body_title">Titel</label>' +
+					'<div class="container">' +
+						'<div class="row">' +
+							'<form class="col s12" id="e'+eventID+'_body_form">' +
+								'<div class="row">' +
+									'<div class="input-field col s12">' +
+										'<input placeholder="Titel" id="e'+eventID+'_body_title" type="text" class="validate">' +
+										'<label for="e'+eventID+'_body_title">Titel</label>' +
+									'</div>' +
 								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s3">' +
-									'<input id="e'+eventID+'_body_start" type="date" class="datepicker">' +
-									'<label for="e'+eventID+'_body_start">Start</label>' +
+								'<div class="row">' +
+									'<div class="input-field col s3">' +
+										'<input id="e'+eventID+'_body_start" type="date" class="datepicker">' +
+										'<label for="e'+eventID+'_body_start">Start</label>' +
+									'</div>' +
+									'<div class="input-field col s3">' +
+										'<input id="e'+eventID+'_body_start_time" type="date" class="timepicker">' +
+										'<label for="e'+eventID+'_body_start_time">Start</label>' +
+									'</div>' +
+									'<div class="input-field col s3">' +
+										'<input	id="e'+eventID+'_body_end" type="date" class="datepicker">' +
+										'<label for="e'+eventID+'_body_end">Ende</label>' +
+									'</div>' +
+									'<div class="input-field col s3">' +
+										'<input	id="e'+eventID+'_body_end_time" type="date" class="timepicker">' +
+										'<label for="e'+eventID+'_body_end_time">Ende</label>' +
+									'</div>' +
 								'</div>' +
-								'<div class="input-field col s3">' +
-									'<input id="e'+eventID+'_body_start_time" type="date" class="timepicker">' +
-									'<label for="e'+eventID+'_body_start_time">Start</label>' +
+								'<div class="row">' +
+									'<div class="col m8 s12">' +
+										'<div class="row">' +
+											'<div class="input-field col s12">' +
+												'<input id="e'+eventID+'_body_organizer" type="email" class="validate">' +
+												'<label for="e'+eventID+'_body_organizer">Organisator</label>' +
+											'</div>' +
+										'</div>' +
+										'<div class="row">' +
+											'<div class="input-field col s12">' +
+												'<input id="e'+eventID+'_body_location" type="text" class="validate">' +
+												'<label for="e'+eventID+'_body_location">Ort</label>' +
+											'</div>' +
+										'</div>' +
+									'</div>' +
+									'<div class="col m4 s12" id="imageblock">' +
+										'<div class="card">' +
+											'<div class="card-image">' +
+												'<img class="responsive-img materialboxed" src="assets/images/Placeholder.png" alt="Bild des Kalendereintrags" id="e'+eventID+'_body_image">'+
+											'</div>' +
+											'<div class="card-action">' +
+												'<div class="file-field input-field">' +
+														'<input type="button" class="btn uploadBtn" value="Upload">' +
+														'<input type="file" accept="image/*" id="e'+eventID+'_body_new_image">' +
+												'</div>' +
+											'</div>' +
+										'</div>' +
+									'</div>' +
 								'</div>' +
-								'<div class="input-field col s3">' +
-									'<input	id="e'+eventID+'_body_end" type="date" class="datepicker">' +
-									'<label for="e'+eventID+'_body_end">Ende</label>' +
+								'<div class="row">' +
+									'<div class="input-field col s4">' +
+										'<input type="checkbox" onclick="localToggleAllday(\'e'+eventID+'\')" id="e'+eventID+'_body_allday" />' +
+										'<label for="e'+eventID+'_body_allday">Ganztägig</label>' +
+									'</div>' +
+									'<div class="input-field col s8">' +
+										'<select id="e'+eventID+'_body_status">' +
+											'<option value="Busy" selected>Beschäftigt</option>' +
+											'<option value="Free">Verfügbar</option>' +
+										'</select>' +
+										'<label>Status</label>' +
+									'</div>' +
 								'</div>' +
-								'<div class="input-field col s3">' +
-									'<input	id="e'+eventID+'_body_end_time" type="date" class="timepicker">' +
-									'<label for="e'+eventID+'_body_end_time">Ende</label>' +
+								'<div class="row">' +
+									'<div class="input-field col s12">' +
+										'<input id="e'+eventID+'_body_webpage" type="text" class="validate">' +
+										'<label for="e'+eventID+'_body_webpage">Website</label>' +
+									'</div>' +
 								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s12">' +
-									'<input id="e'+eventID+'_body_organizer" type="email" class="validate">' +
-									'<label for="e'+eventID+'_body_organizer">Organisator</label>' +
+								'<div class="row">' +
+									'<div class="input-field col s6">' +
+										'<input id="e'+eventID+'_save" onclick="localSaveForm(\''+eventID+'\');" type="button" class="btn" value="Speichern">' +
+									'</div>' +
+									'<div class="input-field col s6">' +
+										'<input id="e'+eventID+'_body_cancel" type="button" onclick="localResetForm(\''+eventID+'\');" class="btn" value="Abbrechen">' +
+									'</div>' +
 								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s12">' +
-									'<input id="e'+eventID+'_body_location" type="text" class="validate">' +
-									'<label for="e'+eventID+'_body_location">Ort</label>' +
-								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s4">' +
-									'<input type="checkbox" id="e'+eventID+'_body_allday" />' +
-									'<label for="e'+eventID+'_body_allday">Ganztägig</label>' +
-								'</div>' +
-								'<div class="input-field col s8">' +
-									'<select id="e'+eventID+'_body_status">' +
-										'<option value="Busy" selected>Beschäftigt</option>' +
-										'<option value="Free">Verfügbar</option>' +
-									'</select>' +
-									'<label>Status</label>' +
-								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s12">' +
-									'<input id="e'+eventID+'_body_webpage" type="text" class="validate">' +
-									'<label for="e'+eventID+'_body_webpage">Website</label>' +
-								'</div>' +
-							'</div>' +
-							'<div class="row">' +
-								'<div class="input-field col s6">' +
-									'<input id="e'+eventID+'_save" onclick="localSaveForm(\''+eventID+'\');" type="button" class="btn" value="Speichern">' +
-								'</div>' +
-								'<div class="input-field col s6">' +
-									'<input id="e'+eventID+'_body_cancel" type="button" onclick="localResetForm(\''+eventID+'\');" class="btn" value="Abbrechen">' +
-								'</div>' +
-							'</div>' +
-						'</form>' +
+							'</form>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
 			'</li>';
@@ -186,50 +238,55 @@ function localCreateEntry(eventID, start)
 		showError("Anlegen fehlgeschlagen");
 		return;
 	}
-	//var alleEintraege = liste.querySelectorAll("li");
+	var alleEintraege = liste.querySelectorAll("li");
 	var einfuegenNach = -1;
-	//var dateString = parseTimeString(start);
-	//var entryDate =  new Date(dateString[2],dateString[1],dateString[0],dateString[3],dateString[4]);
-	//if(alleEintraege.length >= 1)
-	//{
-		//einfuegenNach = 0;
-		//for(let eintrag of alleEintraege)
-		//{
-			//if(eintrag.id == "")
-			//{
-			//	continue;
-			//}
-			//showDebug("Eintrag:"+eintrag.id);
-			//dateString =  parseTimeString(localGetEntryValue(eintrag, "head_start"));
-			//var tmpDate = new Date(dateString[2],dateString[1],dateString[0],dateString[3],dateString[4]);
-			//showDebug(tmpDate.getTime() +"<"+ entryDate.getTime());
-			//if(tmpDate.getTime() <= entryDate.getTime())
-			//{
-			//	einfuegenNach = eintrag.id;
-			//}
-			//if(tmpDate.getTime() > entryDate.getTime())
-			//{
-			//	break;
-			//}
-		//}
-	//}
-	//showDebug(einfuegenNach);
-	//if(einfuegenNach == -1)
-	//{
+	var dateString = parseTimeString(start);
+	var entryDate =  new Date(dateString[2],dateString[1],dateString[0],dateString[3],dateString[4]);
+	if(alleEintraege.length >= 1)
+	{
+		einfuegenNach = 0;
+		for(let eintrag of alleEintraege)
+		{
+			if(eintrag.id == "")
+			{
+				continue;
+			}
+			showDebug("Eintrag:"+eintrag.id);
+			dateString =  parseTimeString(localGetEntryValue(eintrag, "head_start"));
+			var tmpDate = new Date(dateString[2],dateString[1],dateString[0],dateString[3],dateString[4]);
+			showDebug(tmpDate.getTime() +"<"+ entryDate.getTime());
+			if(tmpDate.getTime() <= entryDate.getTime())
+			{
+				einfuegenNach = eintrag.id;
+			}
+			if(tmpDate.getTime() > entryDate.getTime())
+			{
+				break;
+			}
+		}
+	}
+	showDebug(einfuegenNach);
+	if(einfuegenNach == -1)
+	{
 	$(liste).append(template);
-	//}else if(einfuegenNach == 0){
-	//	$(template).insertBefore("#"+liste.id+" > :first-child");
-	//}else{
-	//	$(template).insertAfter("#"+einfuegenNach)
-	//}
+	}else if(einfuegenNach == 0){
+		$(template).insertBefore("#"+liste.id+" > :first-child");
+	}else{
+		$(template).insertAfter("#"+einfuegenNach)
+	}
 	var newElement = localGetEntryElement(eventID);
 	localDisableFormular(newElement, true);
 	return newElement;
 }
+
 function localResetForm(eventID)
 {
 	getAllEntriesFromServer();
 	localDisableFormular("#e"+eventID, true)
+}
+function localResetNavbarForm()
+{
+	$('#navbarNewEntryForm').get(0).reset();
 }
 function localSaveForm(eventID)
 {
@@ -252,7 +309,18 @@ function localSaveForm(eventID)
 		allday = 0;
 	}
 	var webpage = $("#e"+eventID+"_body_webpage").val();
+	localDisableFormular("#e"+eventID, true);
 	createAjaxQueryEntry(title, start, end, location, organizer, status, allday, webpage, eventID);
+	if(document.getElementById("e"+eventID+"_body_new_image").files.length != 0)
+	{
+		var newPic = document.getElementById("e"+eventID+"_body_new_image").files[0];
+		if((newPic.size/1024) > 5000)
+		{
+			showError("Bild zu groß");
+		}else{
+		createAjaxQueryAddImage(eventID, newPic)
+		}
+	}
 }
 function localRemoveEntry(eventID)
 {
@@ -274,6 +342,7 @@ function localDisableFormular(element, onoff)
 }
 function localSetEntry(title, location, organizer, start, end, status, allday, webpage, eventID)
 {
+	
 	var tmpDate = parseTimeString(start,"us");
 	var start_date = tmpDate[0]+"."+tmpDate[1]+"."+tmpDate[2];
 	var start_time = tmpDate[3]+":"+tmpDate[4];
@@ -284,7 +353,12 @@ function localSetEntry(title, location, organizer, start, end, status, allday, w
 	if(listenEintrag == null)
 	{
 		listenEintrag = localCreateEntry(eventID, start_date+" "+start_time);
+		$(listenEintrag).focus();
+		listenEintrag.scrollIntoView('{block: "end"}');
+		window.scrollBy(0, -100);
+		$(listenEintrag).eq(0).addClass("newEntry");
 	}
+	localMakeNavbarSmall();
 	localSetEntryValue(listenEintrag, "head_title", title);
 	localSetEntryValue(listenEintrag, "head_start", start_date+" "+start_time);
 	localSetEntryValue(listenEintrag, "body_title", title);
@@ -300,6 +374,7 @@ function localSetEntry(title, location, organizer, start, end, status, allday, w
 }
 function localGetEntryValue(objEntry, value)
 {
+	
 	var tmpElem;
 	tmpElem = document.getElementById(objEntry.id + "_" + value);
 	if(tmpElem == null)
@@ -323,8 +398,16 @@ function localGetEntryValue(objEntry, value)
 	
 	return val;
 }
+function localSetImage(eventID, imageURL)
+{
+	if(imageURL != "")
+	{
+		$('#e'+eventID+'_body_image').prop("src", imageURL);
+	}
+}
 function localSetEntryValue(objEntry, item, value)
 {
+	showDebug("Set "+item+" to "+value);
 	var tmpElem;
 	tmpElem = document.getElementById(objEntry.id + "_" + item);
 	if(tmpElem == null)
@@ -381,10 +464,16 @@ function createAjaxQueryAddCategorieZuEvent(eventID, categorieID)
 {
 	ajaxQuery("set_cat-event", "", categorieID+"/"+eventID);
 }
-function createAjaxQueryAddImage(eventID)
+function createAjaxQueryAddImage(eventID, fileObject)
 {
-	showDebug("ToDo");
-	//ajaxQuery("set_image", "", eventID);
+	showDebug("Picture Filename: "+fileObject.name);
+	var reader = new FileReader();
+    reader.onload = function() {
+		var jsondata = { "data": reader.result };
+		showDebug("Picture JSONData: "+JSON.stringify(jsondata));
+		ajaxQuery("set_image", jsondata, eventID);
+    };
+    reader.readAsDataURL(fileObject);
 }
 function createAjaxQueryRemoveCategorieVonEvent(eventID, categorieID)
 {
@@ -410,16 +499,22 @@ function createAjaxQueryEntry(title, start, end, location, organizer, status, al
         "allday": allday, 
         "webpage": webpage
         };
-		showDebug(JSON.stringify(jsondata));
+		//showDebug(JSON.stringify(jsondata));
 		if(optEventID != null && optEventID != "" && optEventID != NaN){
 			showDebug("EventID: "+optEventID);
 			ajaxQuery("change_event",jsondata,optEventID);
 		}else{
-			ajaxQuery("set_event",jsondata);
+			ajaxQuery("set_event", jsondata);
 		}
 }
 function ajaxError(response)
 {
+	showLoadingAnimation(false);
+	if(response.responseText == null)
+	{
+		showError("Abrufen fehlgeschlagen. Keine Verbindung.");
+		return;
+	}
 	var data = jQuery.parseJSON(response.responseText);
 	switch(data.code){
 		case 1:
@@ -441,6 +536,7 @@ function ajaxError(response)
 }
 function ajaxSuccess(response, action)
 {
+	showLoadingAnimation(false);
     showDebug("ajaxSuccess: Action="+action);
     showDebug("Response="+response.responseText);
     switch(action){
@@ -494,12 +590,14 @@ function ajaxSuccess(response, action)
             break;
     }
 }
-function ajaxQuery(action, optQueryText, optParam)
+function ajaxQuery(action, queryText, optParam)
 {
-    var userid = "it15002";
+	showLoadingAnimation(true);
+    showDebug('Create Ajax Query{"action":"'+action+'","queryText":"'+queryText+'","optParam":"'+optParam+'"}');
+	var userid = "it15002";
     var actionURL = "";
-    var queryText = optQueryText;
     var type = "";
+	var JSONData = queryText;
     switch(action){
         //Einträge Anlegen
         case "set_event":
@@ -511,7 +609,7 @@ function ajaxQuery(action, optQueryText, optParam)
             type = "POST";
             break;
         case "set_image":
-            actionURL = "images";
+            actionURL = "images/"+optParam;
             type = "POST";
             break;
         case "set_cat-event":
@@ -556,38 +654,35 @@ function ajaxQuery(action, optQueryText, optParam)
     }
 
     var url="http://dhbw.ramonbisswanger.de/calendar/" + userid + "/" + actionURL;
-    var result= $.ajax({
+	showDebug('Send the following Data{"url":"'+url+'","type":"'+type+'","data":"'+JSON.stringify(JSONData)+'"}');
+    $.ajax({
         url: url,
-        data: JSON.stringify(queryText),
-        error: function(jqXHR, textStatus, errorThrown)
-            {
-                ajaxError(jqXHR);
-                showError(textStatus);
-                showError(errorThrown);
-            },
-        dataType: 'json',
-        success: function(data, textStatus, jqXHR)
-            {
-                ajaxSuccess(jqXHR, action);
-            },
         type: type,
+		contentType: "application/json",
+        dataType: "json",
+		//cache: false, //produziert, warum auch immer Fehler...
+        data: JSON.stringify(JSONData),
+        error: function(jqXHR, textStatus, errorThrown){ ajaxError(jqXHR); },
+        success: function(data, textStatus, jqXHR){ ajaxSuccess(jqXHR, action); }
     });
 
 
 }
 function onAjaxSuccessUpdateEvents(jsonData)
 {
-	//$("li").removeClass("updated");
-	$("li").remove();
+	$("li").removeClass("updated");
+	//$("li").remove();
+	showDebug(jsonData);
     var data = jQuery.parseJSON(jsonData);
 	data = sortJSONDate(data, "start");
 	for(let element of data)
 	{
 		localSetEntry(element.title, element.location, element.organizer, element.start, element.end, element.status, element.allday, element.webpage, element.id);
 		$("#e"+element.id).addClass("updated");
-		//createAjaxQueryDel_entry(element.id);
+		showDebug("ImageURL: "+element.imageurl);
+		localSetImage(element.id, element.imageurl);
 	}
-	//init();
+	$("li").not(".updated").remove();
 }
 function onAjaxSuccessUpdateCategories(jsonData)
 {
@@ -609,8 +704,7 @@ function init()
   $(function(){
 	getAllEntriesFromServer();
 	init();
-	
-    $('.button-collapse').sideNav();
+    //$('.button-collapse').sideNav();
     $('.collapsible').collapsible({
       accordion : true // A setting that changes the collapsible behavior to expandable instead of the default accordion style
     });

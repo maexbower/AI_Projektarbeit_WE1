@@ -23,7 +23,6 @@
     word-wrap: normal;
     white-space: nowrap;
     direction: ltr;
-
     /* Support for all WebKit browsers. */
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */
@@ -40,17 +39,31 @@ div.collapsible-header.calendar_list > div.row {
     margin-bottom: 0;
 }
 .toastErrorClass {
-	color: red !important;
+	color: white !important;
+	background-color: red !important;
+	top: auto !important;
+	left: auto !important;
+	position: relative !important;
+	right: 5em !important;
+	bottom: 5em !important;
 }
 .toastSuccessClass {
 	color: green !important;
+	background-color: white !important;
 	top: auto !important;
-	right: auto !important;
-	bottom: 10%;
-	left:7%;  
+	left: auto !important;
+	position: relative !important;
+	right: 5em !important;
+	bottom: 5em !important;
 }
 .toastDebugClass {
 	color: blue !important;
+	background-color: white !important;
+	top: auto !important;
+	left: auto !important;
+	position: relative !important;
+	right: 5em !important;
+	bottom: 5em !important;
 }
 input[disabled], select[disabled]{
 	color: black !important;
@@ -60,4 +73,62 @@ input[type="button"][disabled] {
 }
 nav.kopfzeileBig, div.kopfzeileBig {
 	height: auto !important;
+}
+#MyLoader{
+	/*top: auto !important;
+	left: auto !important;
+	position: fixed !important;
+	right: 0px !important;
+	bottom: 0px !important;*/
+	margin: 0px;
+}
+@-webkit-keyframes fadeIt {
+  0%   { background-color: #FFFFFF; }
+  50%  { background-color: #ff9800; }
+  100% { background-color: #FFFFFF; }
+}
+@-moz-keyframes fadeIt {
+  0%   { background-color: #FFFFFF; }
+  50%  { background-color: #ff9800; }
+  100% { background-color: #FFFFFF; }
+}
+@-o-keyframes fadeIt {
+  0%   { background-color: #FFFFFF; }
+  50%  { background-color: #ff9800; }
+  100% { background-color: #FFFFFF; }
+}
+@keyframes fadeIt {
+  0%   { background-color: #FFFFFF; }
+  50%  { background-color: #ff9800; }
+  100% { background-color: #FFFFFF; }
+}
+li.newEntry > div.calendar_list {
+	-webkit-animation: fadeIt 1s ease-in-out; 
+       -moz-animation: fadeIt 1s ease-in-out; 
+         -o-animation: fadeIt 1s ease-in-out; 
+            animation: fadeIt 1s ease-in-out; 
+}
+/*
+#imageblock i {
+	top: auto !important;
+	left: auto !important;
+	position: absolute !important;
+	right: 1em !important;
+	bottom: 1em !important;
+}*/
+input.uploadBtn {
+	float: none !important;
+	height: auto !important;
+	line-height: auto !important;
+	width:100%;
+}
+div#imageblock > div.card > div.card-action {
+	padding:0px !important;
+}
+div#imageblock > div.card > div.card-action > div.input-field {
+	margin:0px;
+}
+
+#imageblock{
+	position: relative !important;
 }
