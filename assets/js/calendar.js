@@ -109,26 +109,65 @@ function parseTimeString(time, order)
 	}
 	return returnArr;
 }
-function localCreateNewEntry(title, start, end, organizer)
+function localCreateNewEntry(eventID)
 {
-	start = parseTimeString(start);
-	start = start[2]+"-"+start[1]+"-"+start[0]+"T"+start[3]+":"+start[4];
-	end = parseTimeString(end);
-	end = end[2]+"-"+end[1]+"-"+end[0]+"T"+end[3]+":"+end[4];
-	createAjaxQueryEntry(title, start, end, "", organizer, "Busy");
+	var titleElem = $('#navbarTitleNew');
+	var startDateElem = $('#navbarStartDateNew');
+	var startTimeElem = $('#navbarStartTimeNew');
+	var endDateElem = $('#navbarEndDateNew');
+	var endTimeElem = $('#navbarEndTimeNew');
+	var organizerElem = $('#navbarOrganizerNew');
+	if($('#navbarNewEntryForm').get(0).checkValidity() == true)
+	{
+		var title = titleElem.val();
+		var start = startDateElem.val()+" "+startTimeElem.val();
+		var end = endDateElem.val()+" "+endTimeElem.val();
+		var organizer = organizerElem.val();
+		start = parseTimeString(start);
+		start = start[2]+"-"+start[1]+"-"+start[0]+"T"+start[3]+":"+start[4];
+		end = parseTimeString(end);
+		end = end[2]+"-"+end[1]+"-"+end[0]+"T"+end[3]+":"+end[4];
+		createAjaxQueryEntry(title, start, end, "", organizer, "Busy");
+	}else{
+		showError("Das Formular enthält Fehler");
+		if(titleElem.get(0).checkValidity() == false){
+			showError("Titel darf nicht leer sein.");
+			titleElem.addClass("invalid");
+		}
+		if(startDateElem.get(0).value == ""){
+			showError("Startdatum muss ein gültiges Datum sein.");
+			startDateElem.addClass("invalid");
+		}
+		if(startTimeElem.get(0).checkValidity() == false){
+			showError("Startzeit muss eine gültige Uhrzeit sein.");
+			startTimeElem.addClass("invalid");
+		}
+		if(endDateElem.get(0).value == ""){
+			showError("Enddatum muss ein gültiges Datum sein.");
+			endDateElem.addClass("invalid");
+		}
+		if(endTimeElem.get(0).checkValidity() == false){
+			showError("Endzeit muss eine gültige Uhrzeit sein.");
+			endTimeElem.addClass("invalid");
+		}
+		if(organizerElem.get(0).checkValidity() == false){
+			showError("Veranstalter muss eine gültige E-Mail Adresse sein");
+			organizerElem.addClass("invalid");
+		}		
+	}
 }
 function localCreateEntry(eventID, start)
 {
 	var template = '<li id="e'+eventID+'" class="">' +
 				'<div class="collapsible-header calendar_list" id="e'+eventID+'_head">' +
                     '<div class="row">' +
-                        '<div class="col s2" id="e'+eventID+'_head_start">' +
+                        '<div class="col l2 s4" id="e'+eventID+'_head_start">' +
 							''+start+'' +
                         '</div>' +
-                        '<div class="col s8" id="e'+eventID+'_head_title">' +
+                        '<div class="col l8 s5 center" id="e'+eventID+'_head_title">' +
                             'Dummy' +
                         '</div>' +
-                        '<div class="s2" id="e'+eventID+'_head_buttons">' +
+                        '<div class="m2 l3" id="e'+eventID+'_head_buttons">' +
                             '<i class="material-icons" onclick="localDisableFormular(\'#e'+eventID+'\',false);" id="e'+eventID+'_edit">mode_edit</i>' +
                             '<i class="material-icons" onclick="localRemoveEntry(\''+eventID+'\');" id="e'+eventID+'_delete">delete</i>' +
                         '</div>' +
@@ -140,25 +179,25 @@ function localCreateEntry(eventID, start)
 							'<form class="col s12" id="e'+eventID+'_body_form">' +
 								'<div class="row">' +
 									'<div class="input-field col s12">' +
-										'<input placeholder="Titel" id="e'+eventID+'_body_title" type="text" class="validate">' +
+										'<input placeholder="Titel" id="e'+eventID+'_body_title" type="text" class="validate" required>' +
 										'<label for="e'+eventID+'_body_title">Titel</label>' +
 									'</div>' +
 								'</div>' +
 								'<div class="row">' +
 									'<div class="input-field col s3">' +
-										'<input id="e'+eventID+'_body_start" type="date" class="datepicker">' +
+										'<input id="e'+eventID+'_body_start" type="date" class="datepicker validate" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>' +
 										'<label for="e'+eventID+'_body_start">Start</label>' +
 									'</div>' +
 									'<div class="input-field col s3">' +
-										'<input id="e'+eventID+'_body_start_time" type="date" class="timepicker">' +
+										'<input id="e'+eventID+'_body_start_time" type="date" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
 										'<label for="e'+eventID+'_body_start_time">Start</label>' +
 									'</div>' +
 									'<div class="input-field col s3">' +
-										'<input	id="e'+eventID+'_body_end" type="date" class="datepicker">' +
+										'<input	id="e'+eventID+'_body_end" type="date" class="datepicker validate" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>' +
 										'<label for="e'+eventID+'_body_end">Ende</label>' +
 									'</div>' +
 									'<div class="input-field col s3">' +
-										'<input	id="e'+eventID+'_body_end_time" type="date" class="timepicker">' +
+										'<input	id="e'+eventID+'_body_end_time" type="date" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
 										'<label for="e'+eventID+'_body_end_time">Ende</label>' +
 									'</div>' +
 								'</div>' +
@@ -166,13 +205,13 @@ function localCreateEntry(eventID, start)
 									'<div class="col m8 s12">' +
 										'<div class="row">' +
 											'<div class="input-field col s12">' +
-												'<input id="e'+eventID+'_body_organizer" type="email" class="validate">' +
+												'<input id="e'+eventID+'_body_organizer" class="validate" type="email" class="validate" required>' +
 												'<label for="e'+eventID+'_body_organizer">Organisator</label>' +
 											'</div>' +
 										'</div>' +
 										'<div class="row">' +
 											'<div class="input-field col s12">' +
-												'<input id="e'+eventID+'_body_location" type="text" class="validate">' +
+												'<input id="e'+eventID+'_body_location" class="validate" type="text" class="validate">' +
 												'<label for="e'+eventID+'_body_location">Ort</label>' +
 											'</div>' +
 										'</div>' +
@@ -193,20 +232,21 @@ function localCreateEntry(eventID, start)
 								'</div>' +
 								'<div class="row">' +
 									'<div class="input-field col s4">' +
-										'<input type="checkbox" onclick="localToggleAllday(\'e'+eventID+'\')" id="e'+eventID+'_body_allday" />' +
+										'<input type="checkbox" onclick="localToggleAllday(\'e'+eventID+'\')" class="validate" id="e'+eventID+'_body_allday" />' +
 										'<label for="e'+eventID+'_body_allday">Ganztägig</label>' +
 									'</div>' +
 									'<div class="input-field col s8">' +
 										'<select id="e'+eventID+'_body_status">' +
 											'<option value="Busy" selected>Beschäftigt</option>' +
 											'<option value="Free">Verfügbar</option>' +
+											'<option value="Tentative">Ausstehend</option>' +
 										'</select>' +
 										'<label>Status</label>' +
 									'</div>' +
 								'</div>' +
 								'<div class="row">' +
 									'<div class="input-field col s12">' +
-										'<input id="e'+eventID+'_body_webpage" type="text" class="validate">' +
+										'<input id="e'+eventID+'_body_webpage" type="url" class="validate">' +
 										'<label for="e'+eventID+'_body_webpage">Website</label>' +
 									'</div>' +
 								'</div>' +
@@ -290,35 +330,96 @@ function localResetNavbarForm()
 }
 function localSaveForm(eventID)
 {
-	showDebug("EventID:"+eventID);
-	var title = $("#e"+eventID+"_body_title").val();
-	var location = $("#e"+eventID+"_body_location").val();
-	var organizer = $("#e"+eventID+"_body_organizer").val();
-	var start = $("#e"+eventID+"_body_start").val() + " " + $("#e"+eventID+"_body_start_time").val();
-	start = parseTimeString(start);
-	start = start[2]+"-"+start[1]+"-"+start[0]+"T"+start[3]+":"+start[4];
-	var end = $("#e"+eventID+"_body_end").val() + " " + $("#e"+eventID+"_body_end_time").val();
-	end = parseTimeString(end);
-	end = end[2]+"-"+end[1]+"-"+end[0]+"T"+end[3]+":"+end[4];
-	var status = $("#e"+eventID+"_body_status").val();
-	var allday = document.getElementById("e"+eventID+"_body_allday").checked;
-	if(allday == true)
+	showDebug("Save Form with EventID:"+eventID);
+	var titleElem = $("#e"+eventID+"_body_title");
+	var locationElem = $("#e"+eventID+"_body_location");
+	var startDateElem = $("#e"+eventID+"_body_start");
+	var startTimeElem = $("#e"+eventID+"_body_start_time");
+	var endDateElem = $("#e"+eventID+"_body_end");
+	var endTimeElem = $("#e"+eventID+"_body_end_time");
+	var organizerElem = $("#e"+eventID+"_body_organizer");
+	var statusElem = $("#e"+eventID+"_body_status");
+	var alldayElem = $("#e"+eventID+"_body_allday");
+	var webpageElem = $("#e"+eventID+"_body_webpage");
+	
+	if($('#e'+eventID+'_body_form').get(0).checkValidity() == true)
 	{
-		allday = 1;
-	}else{
-		allday = 0;
-	}
-	var webpage = $("#e"+eventID+"_body_webpage").val();
-	localDisableFormular("#e"+eventID, true);
-	createAjaxQueryEntry(title, start, end, location, organizer, status, allday, webpage, eventID);
-	if(document.getElementById("e"+eventID+"_body_new_image").files.length != 0)
-	{
-		var newPic = document.getElementById("e"+eventID+"_body_new_image").files[0];
-		if((newPic.size/1024) > 5000)
+		var title = titleElem.val();
+		var location =locationElem.val();
+		var organizer = $("#e"+eventID+"_body_organizer").val();
+		var start = startDateElem.val() + " " + startTimeElem.val();
+		start = parseTimeString(start);
+		start = start[2]+"-"+start[1]+"-"+start[0]+"T"+start[3]+":"+start[4];
+		var end = endDateElem.val() + " " + endTimeElem.val();
+		end = parseTimeString(end);
+		end = end[2]+"-"+end[1]+"-"+end[0]+"T"+end[3]+":"+end[4];
+		var status = statusElem.val();
+		var allday = alldayElem.get(0).checked;
+		if(allday == true)
 		{
-			showError("Bild zu groß");
+			allday = 1;
 		}else{
-		createAjaxQueryAddImage(eventID, newPic)
+			allday = 0;
+		}
+		var webpage = webpageElem.val();
+		localDisableFormular("#e"+eventID, true);
+		createAjaxQueryEntry(title, start, end, location, organizer, status, allday, webpage, eventID);
+		if(document.getElementById("e"+eventID+"_body_new_image").files.length != 0)
+		{
+			var newPic = document.getElementById("e"+eventID+"_body_new_image").files[0];
+			if((newPic.size/1024) > 500)
+			{
+				showError("Bild zu groß");
+			}else{
+				if(newPic.type == "image/jpeg" || newPic.type == "image/png"  || newPic.type == "image/jpg")
+				{
+					createAjaxQueryAddImage(eventID, newPic);
+				}else{
+					showError("Falsches Dateiformat des Bildes");
+				}
+			}
+		}
+	}else{
+		showError("Das Formular enthält Fehler");
+		if(titleElem.get(0).checkValidity() == false){
+			showError("Titel darf nicht leer sein.");
+			titleElem.addClass("invalid");
+		}
+		if(startDateElem.get(0).value == ""){
+			showError("Startdatum muss ein gültiges Datum sein.");
+			startDateElem.addClass("invalid");
+		}
+		if(startTimeElem.get(0).checkValidity() == false){
+			showError("Startzeit muss eine gültige Uhrzeit sein.");
+			startTimeElem.addClass("invalid");
+		}
+		if(endDateElem.get(0).value == ""){
+			showError("Enddatum muss ein gültiges Datum sein.");
+			endDateElem.addClass("invalid");
+		}
+		if(endTimeElem.get(0).checkValidity() == false){
+			showError("Endzeit muss eine gültige Uhrzeit sein.");
+			endTimeElem.addClass("invalid");
+		}
+		if(organizerElem.get(0).checkValidity() == false){
+			showError("Veranstalter muss eine gültige E-Mail Adresse sein");
+			organizerElem.addClass("invalid");
+		}
+		if(locationElem.get(0).checkValidity() == false){
+			showError("Der Ort muss ein Text sein.");
+			locationElem.addClass("invalid");
+		}
+		if(statusElem.get(0).checkValidity() == false){
+			showError("Es sind beim Status die Werte Verfügbar Beschäftigt und Ausstehend möglich.");
+			statusElem.addClass("invalid");
+		}	
+		if(alldayElem.get(0).checkValidity() == false){
+			showError("Ganztags kann nur Ja oder Nein sein.");
+			alldayElem.addClass("invalid");
+		}
+		if(webpageElem.get(0).checkValidity() == false){
+			showError("Es muss eine gültige URL im Format http(s)://url.tld eingegeben werden.");
+			webpageElem.addClass("invalid");
 		}
 	}
 }
@@ -371,6 +472,8 @@ function localSetEntry(title, location, organizer, start, end, status, allday, w
 	localSetEntryValue(listenEintrag, "body_status", status);
 	localSetEntryValue(listenEintrag, "body_allday", allday);
 	localSetEntryValue(listenEintrag, "body_webpage", webpage);
+	localDisableFormular(listenEintrag, false);
+	localDisableFormular(listenEintrag, true);
 }
 function localGetEntryValue(objEntry, value)
 {
@@ -549,7 +652,8 @@ function ajaxSuccess(response, action)
 			showSuccess("Kategorie erfolgreich angelegt");
             break;
         case "set_image":
-			
+			showSuccess("Bild erfolgreich angelegt");
+			ajaxQuery("get_events");
             break;
         case "set_cat-event":
 			showSuccess("Kategorie erfolgreich hinzugefügt");
@@ -683,6 +787,7 @@ function onAjaxSuccessUpdateEvents(jsonData)
 		localSetImage(element.id, element.imageurl);
 	}
 	$("li").not(".updated").remove();
+	localResetNavbarForm();
 }
 function onAjaxSuccessUpdateCategories(jsonData)
 {

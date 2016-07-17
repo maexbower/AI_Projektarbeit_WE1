@@ -44,8 +44,8 @@ div.collapsible-header.calendar_list > div.row {
 	top: auto !important;
 	left: auto !important;
 	position: relative !important;
-	right: 5em !important;
-	bottom: 5em !important;
+	right: 2em !important;
+	bottom: 2em !important;
 }
 .toastSuccessClass {
 	color: green !important;
@@ -53,8 +53,8 @@ div.collapsible-header.calendar_list > div.row {
 	top: auto !important;
 	left: auto !important;
 	position: relative !important;
-	right: 5em !important;
-	bottom: 5em !important;
+	right: 2em !important;
+	bottom: 2em !important;
 }
 .toastDebugClass {
 	color: blue !important;
@@ -62,8 +62,8 @@ div.collapsible-header.calendar_list > div.row {
 	top: auto !important;
 	left: auto !important;
 	position: relative !important;
-	right: 5em !important;
-	bottom: 5em !important;
+	right: 2em !important;
+	bottom: 2em !important;
 }
 input[disabled], select[disabled]{
 	color: black !important;
@@ -131,4 +131,8 @@ div#imageblock > div.card > div.card-action > div.input-field {
 
 #imageblock{
 	position: relative !important;
+}
+#navbarSendNew{
+	padding: 0 0.2em;
+	margin: 0 0.5em;
 }

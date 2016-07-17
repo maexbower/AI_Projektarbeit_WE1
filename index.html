@@ -16,16 +16,16 @@
 		<div class="">
 			<form class="col s12" id="navbarNewEntryForm">
 				<div class="row" id="firstNavRow" onclick="localMakeNavbarBig();">
-					<div class="input-field col l2 m3 s3">
-						<input type="date" class="datepicker" id="navbarStartDateNew">
+					<div class="input-field col l2 m3 s4">
+						<input type="date" class="datepicker validate" id="navbarStartDateNew" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>
 						<label for="navbarStartDateNew">Von</label>
 					</div>
-					<div class="input-field col l2 m2 s2">
-						<input type="text" class="timepicker" id="navbarStartTimeNew">
+					<div class="input-field col l2 m2 s3">
+						<input type="text" class="timepicker validate" id="navbarStartTimeNew" pattern="[0-2][0-9]:[0-5][0-9]" required>
 						<label for="navbarStartTimeNew">Uhrzeit</label>
 					</div>
-					<div class="input-field col l6 m5 s5">
-						<input type="text" class="" id="navbarTitleNew">
+					<div class="input-field col l6 m5 s3">
+						<input type="text" class="validate" id="navbarTitleNew" required>
 						<label for="navbarTitleNew">Titel</label>
 					</div>
 					<div class="col l2 m2 s2">
@@ -33,16 +33,16 @@
 					</div>
 				</div>
 				<div class="row hide" id="secondNavRow">
-					<div class="input-field col l2 m3 s3">
-						<input type="date" class="datepicker" id="navbarEndDateNew">
+					<div class="input-field col l2 m3 s4">
+						<input type="date" class="datepicker validate" id="navbarEndDateNew" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>
 						<label for="navbarEndDateNew">Bis</label>
 					</div>
-					<div class="input-field col l2 m2 s2">
-						<input type="text" class="timepicker" id="navbarEndTimeNew">
+					<div class="input-field col l2 m2 s3">
+						<input type="text" class="timepicker validate" id="navbarEndTimeNew" pattern="[0-2][0-9]:[0-5][0-9]" required>
 						<label for="navbarEndTimeNew">Uhrzeit</label>
 					</div>
-					<div class="input-field col l8 m7 s7">
-						<input type="email" class="validate" id="navbarOrganizerNew">
+					<div class="input-field col l8 m7 s5">
+						<input type="email" class="validate" id="navbarOrganizerNew" required>
 						<label for="navbarOrganizerNew">Veranstalter</label>
 					</div>
 				</div>
