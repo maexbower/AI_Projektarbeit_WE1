@@ -184,21 +184,21 @@ function localCreateEntry(eventID, start)
 									'</div>' +
 								'</div>' +
 								'<div class="row">' +
-									'<div class="input-field col s3">' +
+									'<div class="input-field col m3 s6">' +
 										'<input id="e'+eventID+'_body_start" type="date" class="datepicker validate" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>' +
 										'<label for="e'+eventID+'_body_start">Start</label>' +
 									'</div>' +
-									'<div class="input-field col s3">' +
-										'<input id="e'+eventID+'_body_start_time" type="date" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
-										'<label for="e'+eventID+'_body_start_time">Start</label>' +
+									'<div class="input-field col m3 s6">' +
+										'<input id="e'+eventID+'_body_start_time" type="text" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
+										'<label for="e'+eventID+'_body_start_time">Zeit</label>' +
 									'</div>' +
-									'<div class="input-field col s3">' +
+									'<div class="input-field col m3 s6">' +
 										'<input	id="e'+eventID+'_body_end" type="date" class="datepicker validate" pattern="(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}" required>' +
 										'<label for="e'+eventID+'_body_end">Ende</label>' +
 									'</div>' +
-									'<div class="input-field col s3">' +
-										'<input	id="e'+eventID+'_body_end_time" type="date" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
-										'<label for="e'+eventID+'_body_end_time">Ende</label>' +
+									'<div class="input-field col m3 s6">' +
+										'<input	id="e'+eventID+'_body_end_time" type="text" class="timepicker validate" pattern="[0-2][0-9]:[0-5][0-9]" required>' +
+										'<label for="e'+eventID+'_body_end_time">Zeit</label>' +
 									'</div>' +
 								'</div>' +
 								'<div class="row">' +
