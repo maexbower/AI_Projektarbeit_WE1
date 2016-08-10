@@ -1,5 +1,5 @@
 ﻿/**
- * Created by max on 10.06.16.
+ * Created by Maximilian Bauknecht on 10.06.16.
  */
 function showError(Message)
 {
@@ -12,7 +12,7 @@ function showSuccess(Message)
 function showDebug(Message)
 {
 	//Materialize.toast("DEBUG:"+Message, 1000, 'toastDebugClass');
-	console.log("DEBUG:"+Message);
+	//console.log("DEBUG:"+Message);
 }
 function sortJSONDate(data, key) 
 {
