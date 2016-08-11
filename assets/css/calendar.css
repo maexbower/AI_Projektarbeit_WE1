@@ -25,7 +25,6 @@
     -webkit-font-smoothing: antialiased;
     /* Support for Safari and Chrome. */
     text-rendering: optimizeLegibility;
-
     /* Support for Firefox. */
     -moz-osx-font-smoothing: grayscale;
 
@@ -108,7 +107,6 @@ li.newEntry > div.calendar_list {
 input.uploadBtn {
 	float: none !important;
 	height: auto !important;
-	line-height: auto !important;
 	width:100%;
 }
 div#imageblock > div.card > div.card-action {
